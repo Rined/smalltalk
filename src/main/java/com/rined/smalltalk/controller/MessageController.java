@@ -58,7 +58,7 @@ public class MessageController {
         messages.remove(messageById);
     }
 
-    private Map<String, String> getMessageById(@PathVariable("id") String id) {
+    private Map<String, String> getMessageById(String id) {
         return messages.stream()
                 .filter(msg -> msg.get("id").equals(id))
                 .findFirst()
