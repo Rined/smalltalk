@@ -1,10 +1,11 @@
-spring:
+server:
+  port: 9000
 
+spring:
   datasource:
     url: jdbc:postgresql://localhost/smalltalk
     username: postgres
     password: password
-
   jpa:
     generate-ddl: true
     properties:
@@ -12,3 +13,19 @@ spring:
         jdbc:
           lob:
             non_contextual_creation: true
+  main:
+    allow-bean-definition-overriding: true
+
+security:
+  oauth2:
+    client:
+      clientId:
+      clientSecret:
+      accessTokenUri: https://www.googleapis.com/oauth2/v4/token
+      userAuthorizationUri: https://accounts.google.com/o/oauth2/v2/auth
+      clientAuthenticationScheme: form
+      scope: openid,email,profile
+    resource:
+      userInfoUri: https://www.googleapis.com/oauth2/v3/userinfo
+      preferTokenInfo: true
+

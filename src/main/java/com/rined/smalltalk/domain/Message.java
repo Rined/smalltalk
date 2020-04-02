@@ -17,7 +17,7 @@ public class Message {
     @Column(name = "text")
     private String text;
 
-    @Column(name = "creationDate", updatable = false)
+    @Column(name = "creation_date", updatable = false)
     private LocalDateTime creationDate;
 
 }
