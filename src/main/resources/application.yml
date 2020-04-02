@@ -1,0 +1,14 @@
+spring:
+
+  datasource:
+    url: jdbc:postgresql://localhost/smalltalk
+    username: postgres
+    password: password
+
+  jpa:
+    generate-ddl: true
+    properties:
+      hibernate:
+        jdbc:
+          lob:
+            non_contextual_creation: true

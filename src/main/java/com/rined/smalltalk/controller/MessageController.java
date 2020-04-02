@@ -1,68 +1,47 @@
 package com.rined.smalltalk.controller;
 
-import com.rined.smalltalk.exceptions.NotFoundException;
+import com.fasterxml.jackson.annotation.JsonView;
+import com.rined.smalltalk.domain.Message;
+import com.rined.smalltalk.dto.MessageDto;
+import com.rined.smalltalk.dto.Views;
+import com.rined.smalltalk.services.MessageService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
-import java.util.HashMap;
+import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Map;
 
 @RestController
 @RequestMapping("message")
+@RequiredArgsConstructor
 public class MessageController {
-    private int counter = 4;
-    private List<Map<String, String>> messages = new ArrayList<Map<String, String>>() {{
-        add(new HashMap<String, String>() {{
-            put("id", "1");
-            put("text", "First message");
-        }});
-        add(new HashMap<String, String>() {{
-            put("id", "2");
-            put("text", "Second message");
-        }});
-        add(new HashMap<String, String>() {{
-            put("id", "3");
-            put("text", "Third message");
-        }});
-    }};
+    private final MessageService messageService;
 
     @GetMapping
-    public List<Map<String, String>> list() {
-        return messages;
+    @JsonView(Views.IdName.class)
+    public List<MessageDto> list() {
+        return messageService.findAll();
     }
 
     @GetMapping("{id}")
-    public Map<String, String> getOne(@PathVariable("id") String id) {
-        return getMessageById(id);
+    @JsonView(Views.FullMessage.class)
+    public MessageDto getOne(@PathVariable("id") Long id) {
+        return messageService.findById(id);
     }
 
     @PostMapping
-    public Map<String, String> create(@RequestBody Map<String, String> message) {
-        message.put("id", String.valueOf(counter++));
-        messages.add(message);
-        return message;
+    public MessageDto create(@RequestBody Message message) {
+        message.setCreationDate(LocalDateTime.now());
+        return messageService.save(message);
     }
 
     @PutMapping("{id}")
-    public Map<String, String> update(@PathVariable("id") String id, @RequestBody Map<String, String> message) {
-        Map<String, String> messageById = getMessageById(id);
-        messageById.putAll(message);
-        messageById.put("id", id);
-        return messageById;
+    public MessageDto update(@PathVariable("id") Message messageFromDb, @RequestBody Message message) {
+        return messageService.updateMessage(messageFromDb, message);
     }
 
     @DeleteMapping("{id}")
-    public void deleteById(@PathVariable("id") String id) {
-        Map<String, String> messageById = getMessageById(id);
-        messages.remove(messageById);
+    public void deleteById(@PathVariable("id") Long id) {
+        messageService.deleteById(id);
     }
-
-    private Map<String, String> getMessageById(String id) {
-        return messages.stream()
-                .filter(msg -> msg.get("id").equals(id))
-                .findFirst()
-                .orElseThrow(NotFoundException::new);
-    }
-
 }
