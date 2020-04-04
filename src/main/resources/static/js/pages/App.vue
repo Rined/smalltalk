@@ -12,7 +12,9 @@
 </template>
 
 <script>
-    import MessagesList from '../components/messages/MessagesList.vue'
+    import MessagesList from 'components/messages/MessagesList.vue'
+    import {addHandler} from "util/ws";
+    import {getIndex} from "util/collection";
 
     export default {
         components: {
@@ -23,6 +25,16 @@
                 messages: frontendData.messages,
                 profile: frontendData.profile
             }
+        },
+        created() {
+            addHandler(data => {
+                let index = getIndex(this.messages, data.id);
+                if (index > -1) {
+                    this.messages.splice(index, 1, data);
+                } else {
+                    this.messages.push(data);
+                }
+            });
         }
     }
 </script>

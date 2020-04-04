@@ -6,6 +6,8 @@ import com.rined.smalltalk.dto.MessageDto;
 import com.rined.smalltalk.dto.Views;
 import com.rined.smalltalk.services.MessageService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.messaging.handler.annotation.MessageMapping;
+import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
@@ -43,5 +45,11 @@ public class MessageController {
     @DeleteMapping("{id}")
     public void deleteById(@PathVariable("id") Long id) {
         messageService.deleteById(id);
+    }
+
+    @SendTo("/topic/activity")
+    @MessageMapping("/changeMessage")
+    public MessageDto change(Message message) {
+        return messageService.save(message);
     }
 }
