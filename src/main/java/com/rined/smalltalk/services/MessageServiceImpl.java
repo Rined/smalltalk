@@ -38,8 +38,9 @@ public class MessageServiceImpl implements MessageService {
     }
 
     @Override
-    public void deleteById(Long id) {
-        repository.deleteById(id);
+    public MessageDto deleteById(Message message) {
+        repository.deleteById(message.getId());
+        return mapper.toDto(message);
     }
 
     @Override

@@ -13,7 +13,7 @@ public interface MessageService {
 
     MessageDto updateMessage(Message messageFromDb, Message message);
 
-    void deleteById(Long id);
+    MessageDto deleteById(Message message);
 
     MessageDto findById(Long id);
 
