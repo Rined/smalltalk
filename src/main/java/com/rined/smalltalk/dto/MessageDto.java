@@ -25,4 +25,20 @@ public class MessageDto {
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime creationDate;
 
+    @JsonProperty("link")
+    @JsonView(Views.FullMessage.class)
+    private String link;
+
+    @JsonProperty("linkTitle")
+    @JsonView(Views.FullMessage.class)
+    private String linkTitle;
+
+    @JsonProperty("linkDescription")
+    @JsonView(Views.FullMessage.class)
+    private String linkDescription;
+
+    @JsonProperty("linkCover")
+    @JsonView(Views.FullMessage.class)
+    private String linkCover;
+
 }

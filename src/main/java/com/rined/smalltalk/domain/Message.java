@@ -20,4 +20,16 @@ public class Message {
     @Column(name = "creation_date", updatable = false)
     private LocalDateTime creationDate;
 
+    @Column(name = "link")
+    private String link;
+
+    @Column(name = "link_title")
+    private String linkTitle;
+
+    @Column(name = "link_description")
+    private String linkDescription;
+
+    @Column(name = "link_cover")
+    private String linkCover;
+
 }
