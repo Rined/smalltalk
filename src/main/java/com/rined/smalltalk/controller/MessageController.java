@@ -2,6 +2,7 @@ package com.rined.smalltalk.controller;
 
 import com.fasterxml.jackson.annotation.JsonView;
 import com.rined.smalltalk.domain.Message;
+import com.rined.smalltalk.domain.User;
 import com.rined.smalltalk.dto.*;
 import com.rined.smalltalk.services.MessageService;
 import com.rined.smalltalk.ws.WsSender;
@@ -9,6 +10,7 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
@@ -49,9 +51,11 @@ public class MessageController {
     }
 
     @PostMapping
-    public MessageDto create(@RequestBody Message message) throws IOException {
+    public MessageDto create(@RequestBody Message message,
+                             @AuthenticationPrincipal User user) throws IOException {
         fillMeta(message);
         message.setCreationDate(LocalDateTime.now());
+        message.setAuthor(user);
         MessageDto createdMessage = messageService.save(message);
         wsSender.accept(EventType.CREATE, createdMessage);
         return createdMessage;
@@ -97,13 +101,13 @@ public class MessageController {
         Elements cover = doc.select("meta[name$=image], meta[property$=image]");
 
         return new MetaDto(
-               getContent(title.first()),
-               getContent(description.first()),
-               getContent(cover.first())
+                getContent(title.first()),
+                getContent(description.first()),
+                getContent(cover.first())
         );
     }
 
-    private String getContent(Element element){
+    private String getContent(Element element) {
         return Objects.isNull(element) ? "" : element.attr("content");
     }
 

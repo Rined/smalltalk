@@ -4,6 +4,7 @@ import lombok.Data;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Data
 @Entity(name = "message")
@@ -31,5 +32,12 @@ public class Message {
 
     @Column(name = "link_cover")
     private String linkCover;
+
+    @ManyToOne
+    @JoinColumn(name = "user_id")
+    private User author;
+
+    @OneToMany(mappedBy = "message", orphanRemoval = true)
+    private List<Comment> comments;
 
 }

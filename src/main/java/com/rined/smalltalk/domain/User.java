@@ -1,6 +1,8 @@
 package com.rined.smalltalk.domain;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonView;
+import com.rined.smalltalk.dto.Views;
 import lombok.Data;
 
 import javax.persistence.Column;
@@ -17,12 +19,15 @@ public class User implements Serializable {
 
     @Id
     @Column(name = "id")
+    @JsonView(Views.IdName.class)
     private String id;
 
     @Column(name = "name")
+    @JsonView(Views.IdName.class)
     private String name;
 
     @Column(name = "userpic")
+    @JsonView(Views.IdName.class)
     private String picture;
 
     @Column(name = "email")

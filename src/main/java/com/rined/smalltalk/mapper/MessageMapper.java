@@ -16,7 +16,9 @@ public interface MessageMapper {
             @Mapping(target = "link", source = "message.link"),
             @Mapping(target = "linkTitle", source = "message.linkTitle"),
             @Mapping(target = "linkCover", source = "message.linkCover"),
-            @Mapping(target = "linkDescription", source = "message.linkDescription")
+            @Mapping(target = "linkDescription", source = "message.linkDescription"),
+            @Mapping(target = "author", source = "message.author"),
+            @Mapping(target = "comments", source = "message.comments")
     })
     MessageDto toDto(Message message);
 
