@@ -1,5 +1,5 @@
 <template>
-    <v-layout>
+    <v-layout class="px-3">
         <v-text-field label="Add comment"
                       placeholder="Write something"
                       @keyup.enter="save"

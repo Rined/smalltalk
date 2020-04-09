@@ -1,6 +1,6 @@
 <template>
-    <v-list two-line>
-        <v-subheader>Comments</v-subheader>
+    <v-list two-line class="pl-3">
+        <v-subheader>Comments:</v-subheader>
         <template v-for="(item, index) in comments">
             <v-divider v-if="index > 0" :key="index"></v-divider>
             <comment-item :comment="item" :key="'item' + index"></comment-item>

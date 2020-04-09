@@ -38,7 +38,7 @@ public class MainController {
             data.put("profile", user);
             model.addAttribute("messages", writer.writeValueAsString(messageService.findAll()));
         } else {
-            model.addAttribute("messages", Collections.emptyList());
+            model.addAttribute("messages", "[]");
         }
         model.addAttribute("frontendData", data);
         model.addAttribute("isDevMode", "dev".equals(profile));

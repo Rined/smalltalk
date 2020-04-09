@@ -14,7 +14,6 @@ public class CommentServiceImpl implements CommentService {
     @Override
     public Comment create(Comment comment, User user) {
         comment.setAuthor(user);
-        repository.save(comment);
-        return comment;
+        return repository.save(comment);
     }
 }
