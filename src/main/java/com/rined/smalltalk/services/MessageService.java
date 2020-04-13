@@ -1,19 +1,23 @@
 package com.rined.smalltalk.services;
 
 import com.rined.smalltalk.domain.Message;
+import com.rined.smalltalk.domain.User;
 import com.rined.smalltalk.dto.MessageDto;
+import com.rined.smalltalk.dto.MessagePageDto;
+import org.springframework.data.domain.Pageable;
 
+import java.io.IOException;
 import java.util.List;
 
 public interface MessageService {
 
-    List<MessageDto> findAll();
+    MessagePageDto findAll(Pageable pageable);
 
-    MessageDto save(Message message);
+    MessageDto save(Message message, User user) throws IOException;
 
-    MessageDto updateMessage(Message messageFromDb, Message message);
+    MessageDto updateMessage(Message messageFromDb, Message message) throws IOException;
 
-    MessageDto deleteById(Message message);
+    void deleteById(Message message);
 
     MessageDto findById(Long id);
 
