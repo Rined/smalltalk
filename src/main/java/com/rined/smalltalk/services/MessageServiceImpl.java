@@ -2,10 +2,12 @@ package com.rined.smalltalk.services;
 
 import com.rined.smalltalk.domain.Message;
 import com.rined.smalltalk.domain.User;
+import com.rined.smalltalk.domain.UserSubscription;
 import com.rined.smalltalk.dto.*;
 import com.rined.smalltalk.exceptions.NotFoundException;
 import com.rined.smalltalk.mapper.MessageMapper;
 import com.rined.smalltalk.repositories.MessageRepository;
+import com.rined.smalltalk.repositories.UserSubscriptionRepository;
 import com.rined.smalltalk.ws.WsSender;
 import lombok.RequiredArgsConstructor;
 import org.jsoup.Jsoup;
@@ -20,6 +22,7 @@ import org.springframework.stereotype.Service;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Objects;
 import java.util.function.BiConsumer;
 import java.util.regex.Matcher;
@@ -31,6 +34,7 @@ import java.util.stream.Collectors;
 public class MessageServiceImpl implements MessageService {
     private final MessageRepository repository;
     private final MessageMapper mapper;
+    private final UserSubscriptionRepository userSubscriptionRepository;
 
     private static String URL_PATTERN = "https?:\\/\\/?[\\w\\d\\._\\-%\\/\\?=&#]+";
     private static String IMG_PATTERN = "\\.(jpeg|jpg|gif|png)$";
@@ -41,15 +45,25 @@ public class MessageServiceImpl implements MessageService {
     private final BiConsumer<EventType, MessageDto> wsSender;
 
     @Autowired
-    public MessageServiceImpl(MessageRepository repository, MessageMapper mapper, WsSender wsSender) {
+    public MessageServiceImpl(MessageRepository repository,
+                              MessageMapper mapper,
+                              WsSender wsSender,
+                              UserSubscriptionRepository userSubscriptionRepository) {
         this.repository = repository;
         this.mapper = mapper;
         this.wsSender = wsSender.getSender(ObjectType.MESSAGE, Views.IdName.class);
+        this.userSubscriptionRepository = userSubscriptionRepository;
     }
 
     @Override
-    public MessagePageDto findAll(Pageable pageable) {
-        Page<Message> page = repository.findAll(pageable);
+    public MessagePageDto findForUser(Pageable pageable, User user) {
+        List<User> channels = userSubscriptionRepository.findBySubscriber(user)
+                .stream()
+                .map(UserSubscription::getChannel)
+                .collect(Collectors.toList());
+        channels.add(user);
+
+        Page<Message> page = repository.findByAuthorIn(channels, pageable);
         return new MessagePageDto(
                 page.stream().map(mapper::toDto).collect(Collectors.toList()),
                 pageable.getPageNumber(),

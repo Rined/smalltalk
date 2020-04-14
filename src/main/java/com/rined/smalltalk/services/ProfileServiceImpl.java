@@ -1,11 +1,13 @@
 package com.rined.smalltalk.services;
 
 import com.rined.smalltalk.domain.User;
+import com.rined.smalltalk.domain.UserSubscription;
 import com.rined.smalltalk.repositories.UserDetailsRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.util.Set;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -14,11 +16,16 @@ public class ProfileServiceImpl implements ProfileService {
 
     @Override
     public User changeSubscription(User channel, User subscriber) {
-        Set<User> subscribers = channel.getSubscribers();
-        if (subscribers.contains(subscriber)) {
-            subscribers.remove(subscriber);
+        List<UserSubscription> userSubscriptions = channel.getSubscribers()
+                .stream()
+                .filter(subscription -> subscription.getSubscriber().equals(subscriber))
+                .collect(Collectors.toList());
+
+        if (userSubscriptions.isEmpty()) {
+            UserSubscription subscription = new UserSubscription(channel, subscriber);
+            channel.getSubscribers().add(subscription);
         } else {
-            subscribers.add(subscriber);
+            channel.getSubscribers().removeAll(userSubscriptions);
         }
         return userRepository.save(channel);
     }

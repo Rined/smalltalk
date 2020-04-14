@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.*;
 import com.rined.smalltalk.dto.Views;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.ToString;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -15,6 +16,7 @@ import java.util.Set;
 @Entity
 @Table(name = "usr")
 @EqualsAndHashCode(of = {"id"})
+@ToString(of = {"id", "name"})
 public class User implements Serializable {
 
     @Id
@@ -47,28 +49,11 @@ public class User implements Serializable {
     private LocalDateTime lastVisit;
 
     @JsonView(Views.FullProfile.class)
-    // все пользователи будут отображены только как id
-    @JsonIdentityReference
-    // если при сериализации один класс встречается более двух раз, то все вхождения со второго заменяются
-    // на идентификатор объекта
-    @JsonIdentityInfo(property = "id", generator = ObjectIdGenerators.PropertyGenerator.class)
-    @ManyToMany
-    @JoinTable(
-            name = "user_subscriptions",
-            joinColumns = @JoinColumn(name = "subscriber_id"),
-            inverseJoinColumns = @JoinColumn(name = "channel_id")
-    )
-    private Set<User> subscriptions = new HashSet<>();
+    @OneToMany(mappedBy = "subscriber", orphanRemoval = true)
+    private Set<UserSubscription> subscriptions = new HashSet<>();
 
-    @JsonIdentityReference
-    @JsonIdentityInfo(property = "id", generator = ObjectIdGenerators.PropertyGenerator.class)
-    @ManyToMany
-    @JoinTable(
-            name = "user_subscriptions",
-            joinColumns = @JoinColumn(name = "channel_id"),
-            inverseJoinColumns = @JoinColumn(name = "subscriber_id")
-    )
     @JsonView(Views.FullProfile.class)
-    private Set<User> subscribers = new HashSet<>();
+    @OneToMany(mappedBy = "channel", orphanRemoval = true, cascade = CascadeType.ALL)
+    private Set<UserSubscription> subscribers = new HashSet<>();
 
 }
