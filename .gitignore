@@ -8,6 +8,9 @@ build/
 **/node_modules
 **/output
 **/package-lock.json
+/src/main/resources/static/js/
+
+start.cmd
 
 ### STS ###
 .apt_generated
