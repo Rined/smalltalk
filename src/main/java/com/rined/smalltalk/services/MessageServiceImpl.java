@@ -51,7 +51,7 @@ public class MessageServiceImpl implements MessageService {
                               UserSubscriptionRepository userSubscriptionRepository) {
         this.repository = repository;
         this.mapper = mapper;
-        this.wsSender = wsSender.getSender(ObjectType.MESSAGE, Views.IdName.class);
+        this.wsSender = wsSender.getSender(ObjectType.MESSAGE, Views.FullMessage.class);
         this.userSubscriptionRepository = userSubscriptionRepository;
     }
 
@@ -85,7 +85,7 @@ public class MessageServiceImpl implements MessageService {
     @Override
     public MessageDto updateMessage(Message messageFromDb, Message message) throws IOException {
         fillMeta(messageFromDb);
-        BeanUtils.copyProperties(message, messageFromDb, "id");
+        messageFromDb.setText(message.getText());
         MessageDto updatedMessage = mapper.toDto(repository.save(messageFromDb));
         wsSender.accept(EventType.UPDATE, updatedMessage);
         return updatedMessage;
