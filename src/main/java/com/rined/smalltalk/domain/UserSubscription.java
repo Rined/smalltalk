@@ -7,16 +7,14 @@ import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 
-import javax.persistence.EmbeddedId;
-import javax.persistence.Entity;
-import javax.persistence.ManyToOne;
-import javax.persistence.MapsId;
+import javax.persistence.*;
 
 @Data
 @Entity
 @ToString(of = "id")
-@EqualsAndHashCode(of = "id")
 @NoArgsConstructor
+@EqualsAndHashCode(of = "id")
+@Table(name = "user_subscription")
 public class UserSubscription {
 
     @EmbeddedId
@@ -26,8 +24,7 @@ public class UserSubscription {
     @ManyToOne
     @MapsId("channelId")
     @JsonView(Views.IdName.class)
-    // все пользователи будут отображены только как id
-    @JsonIdentityReference
+    @JsonIdentityReference  // все пользователи будут отображены только как id
     // если при сериализации один класс встречается более двух раз, то все вхождения со второго заменяются
     // на идентификатор объекта
     @JsonIdentityInfo(property = "id", generator = ObjectIdGenerators.PropertyGenerator.class)
@@ -40,6 +37,7 @@ public class UserSubscription {
     @JsonIdentityInfo(property = "id", generator = ObjectIdGenerators.PropertyGenerator.class)
     private User subscriber;
 
+    @JsonView(Views.IdName.class)
     private boolean active;
 
     public UserSubscription(User channel, User subscriber) {

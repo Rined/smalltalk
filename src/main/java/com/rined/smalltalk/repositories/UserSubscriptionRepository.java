@@ -11,4 +11,7 @@ public interface UserSubscriptionRepository extends JpaRepository<UserSubscripti
 
     List<UserSubscription> findBySubscriber(User user);
 
+    List<UserSubscription> findByChannel(User channel);
+
+    UserSubscription findByChannelAndSubscriber(User channel, User subscriber);
 }
